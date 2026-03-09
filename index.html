@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fanfare - OWL Bear Extension</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1>🎉 Fanfare</h1>
+
+        <!-- Row 1: Popover Header + XP Bar -->
+        <div class="layout-row-two-cols">
+          <section class="panel header-section">
+            <h2>Popover Header</h2>
+            <div class="form-group">
+              <label for="popoverTitle">Title</label>
+              <input type="text" id="popoverTitle" placeholder="e.g., 🎉 Rewards" value="🎉 Rewards" />
+            </div>
+            <div class="form-group">
+              <label for="popoverSubtitle">Subtitle</label>
+              <input type="text" id="popoverSubtitle" placeholder="e.g., End of Encounter" />
+            </div>
+          </section>
+
+          <section class="panel xp-section">
+            <h2>XP Bar</h2>
+            <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+              <div class="form-group">
+                <label for="maxXp">Max XP</label>
+                <input type="number" id="maxXp" min="1" value="100" />
+              </div>
+              <div class="form-group">
+                <label for="currentXp">Current</label>
+                <input type="number" id="currentXp" min="0" value="0" />
+              </div>
+              <div class="form-group">
+                <label for="newXp">New</label>
+                <input type="number" id="newXp" min="0" value="50" />
+              </div>
+            </div>
+            <div class="xp-bar-demo">
+              <div class="xp-bar-fill" id="previewBar"></div>
+              <span class="xp-text" id="previewText">0%</span>
+            </div>
+            <div class="form-group checkbox">
+              <input type="checkbox" id="includeXp" checked />
+              <label for="includeXp">Include XP bar</label>
+            </div>
+          </section>
+        </div>
+
+        <!-- Loot -->
+        <section class="panel loot-section">
+          <h2>Loot</h2>
+          <div class="loot-form">
+            <div class="loot-inputs">
+              <input type="text" id="itemName" placeholder="Item name" />
+              <div class="form-row">
+                <input type="number" id="itemQuantity" min="1" value="1" />
+                <select id="itemRarity">
+                  <option value="common">Common</option>
+                  <option value="uncommon">Uncommon</option>
+                  <option value="rare">Rare</option>
+                  <option value="very-rare">Very Rare</option>
+                  <option value="legendary">Legendary</option>
+                </select>
+              </div>
+            </div>
+            <div class="loot-buttons">
+              <button id="addItemBtn" class="btn btn-secondary">+ Add</button>
+              <button id="exampleBtn" class="btn btn-secondary" style="background: #6c757d;">Demo</button>
+            </div>
+          </div>
+          <div class="loot-list" id="lootList"></div>
+          <div class="form-group checkbox">
+            <input type="checkbox" id="includeLoot" checked />
+            <label for="includeLoot">Include loot</label>
+          </div>
+        </section>
+
+        <!-- Row 3: Save Config + Actions -->
+        <div class="layout-row-two-cols">
+          <section class="panel save-section">
+            <h2>Save Config</h2>
+            <div class="form-group">
+              <label for="saveTarget">Save to</label>
+              <select id="saveTarget">
+                <option value="none">Disabled</option>
+                <option value="scene">Scene</option>
+                <option value="room">Room</option>
+              </select>
+            </div>
+            <div class="form-group checkbox">
+              <input type="checkbox" id="autoSave" />
+              <label for="autoSave">Auto save on send</label>
+            </div>
+            <button id="saveBtn" class="btn btn-secondary">💾 Save Now</button>
+          </section>
+
+          <section class="panel actions-section">
+            <button id="broadcastBtn" class="btn btn-primary">🎯 Send</button>
+            <button id="previewBtn" class="btn btn-secondary">👁️ Preview</button>
+            <button id="resetBtn" class="btn btn-danger">🔄 Reset</button>
+          </section>
+        </div>
+
+        <div id="status" class="status"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
