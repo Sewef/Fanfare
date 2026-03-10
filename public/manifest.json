@@ -1,12 +1,12 @@
 {
-  "name": "Hello, World!",
+  "name": "Fanfare",
   "version": "1.0.0",
   "manifest_version": 1,
   "action": {
-    "title": "Hello, World!",
+    "title": "Fanfare",
     "icon": "/icon.svg",
     "popover": "/",
-    "height": 460,
+    "height": 500,
     "width": 460
   }
 }

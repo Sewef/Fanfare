@@ -1,9 +1,30 @@
 /* Fanfare Player Popover Styles */
 
+:root {
+  --popover-bg: #1a1a1a;
+  --popover-surface: #2d2d2d;
+  --popover-text: #ffffff;
+  --popover-text-muted: #b0b0b0;
+  --popover-primary: #6f42c1;
+  --popover-border: #404040;
+}
+
 html, body {
     font-family: Roboto, Helvetica, Arial, sans-serif;
-    /* background: rgba(240, 240, 240, 0.05); */
+    background: rgba(240, 240, 240, 0.05);
     overflow: hidden;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    /* border: 2px solid #0070dd; */
+}
+
+#popover-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #fanfare-popover-container {
@@ -26,6 +47,8 @@ html, body {
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   max-width: 380px;
   width: 95%;
+  height: 500px;
+  max-height: 90vh;
 }
 
 .fanfare-popover.show {
@@ -34,12 +57,22 @@ html, body {
 }
 
 .fanfare-popover-content {
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid #6f42c1;
+  background: linear-gradient(135deg, var(--popover-surface) 0%, var(--popover-bg) 100%);
+  border: 2px solid var(--popover-primary);
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(111, 66, 193, 0.3);
   overflow: hidden;
   animation: popoverGlow 2s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.fanfare-popover-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 
 @keyframes popoverGlow {
@@ -57,6 +90,7 @@ html, body {
   align-items: center;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .fanfare-header::before {
@@ -77,18 +111,28 @@ html, body {
 .fanfare-header h2 {
   margin: 0;
   font-size: 1.3em;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: rgb(240, 240, 240);
+  text-shadow: 
+    -1px -1px 0 rgba(0, 0, 0, 0.5),
+    1px -1px 0 rgba(0, 0, 0, 0.5),
+    -1px 1px 0 rgba(0, 0, 0, 0.5),
+    1px 1px 0 rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 1;
 }
 
 .fanfare-subtitle {
   font-size: 0.85em;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--popover-text-muted);
   margin-top: 0.3em;
   position: relative;
   z-index: 1;
+  text-shadow: 
+    -1px -1px 0 rgba(0, 0, 0, 0.8),
+    1px -1px 0 rgba(0, 0, 0, 0.8),
+    -1px 1px 0 rgba(0, 0, 0, 0.8),
+    1px 1px 0 rgba(0, 0, 0, 0.8);
 }
 
 .fanfare-close-btn {
@@ -116,9 +160,14 @@ html, body {
 /* Body */
 .fanfare-body {
   padding: 0.6em 1em 0.5em 1em;
-  color: #ffffff;
+  color: var(--popover-text);
   overflow-y: auto;
-  max-height: 340px;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  /* background: var(--popover-bg); */
 }
 
 /* XP Section */
@@ -129,7 +178,7 @@ html, body {
 .fanfare-xp-section h3 {
   font-size: 0.95em;
   margin-bottom: 0.5em;
-  color: #a78bfa;
+  color: var(--popover-primary);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -144,11 +193,11 @@ html, body {
 }
 
 .fanfare-xp-from {
-  color: #b0b0b0;
+  color: var(--popover-text-muted);
 }
 
 .fanfare-xp-arrow {
-  color: #6f42c1;
+  color: var(--popover-primary);
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -190,8 +239,8 @@ html, body {
 .fanfare-xp-bar-bg {
   position: relative;
   height: 32px;
-  background: linear-gradient(180deg, #2a2a2a 0%, #3a3a3a 100%);
-  border: 2px solid #6f42c1;
+  background: linear-gradient(180deg, var(--popover-surface) 0%, var(--popover-bg) 100%);
+  border: 2px solid var(--popover-primary);
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 
@@ -305,7 +354,7 @@ html, body {
 .fanfare-loot-section h3 {
   font-size: 0.95em;
   margin-bottom: 0.5em;
-  color: #fbbf24;
+  color: var(--popover-primary);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -342,6 +391,7 @@ html, body {
   animation: slideInLoot 0.5s ease-out backwards, lootAura 2.5s ease-in-out infinite;
   animation-delay: var(--delay, 0s), 0s;
   overflow: hidden;
+  color: var(--popover-text);
 }
 
 @keyframes slideInLoot {
@@ -452,17 +502,23 @@ html, body {
   font-size: 0.85em;
   margin-bottom: 0.05em;
   line-height: 1.2;
-  max-width: 90%;
+  /* max-width: 90%; */
   word-wrap: break-word;
   word-break: break-word;
-  color: #ffffff;
+  color: rgb(240, 240, 240);
+  text-shadow: 
+    -1px -1px 0 rgba(0, 0, 0, 0.8),
+    1px -1px 0 rgba(0, 0, 0, 0.8),
+    -1px 1px 0 rgba(0, 0, 0, 0.8),
+    1px 1px 0 rgba(0, 0, 0, 0.8),
+    0 0 4px rgba(0, 0, 0, 0.6);
 }
 
 .fanfare-loot-qty {
   font-size: 0.8em;
   font-weight: 600;
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.15);
+  color: var(--popover-primary);
+  background: rgba(111, 66, 193, 0.15);
   padding: 0.15em 0.3em;
   border-radius: 3px;
 }
@@ -483,7 +539,7 @@ html, body {
 .fanfare-loot-empty {
   padding: 2em;
   text-align: center;
-  color: #b0b0b0;
+  color: var(--popover-text-muted);
   font-style: italic;
 }
 
@@ -491,20 +547,21 @@ html, body {
 .fanfare-footer {
   padding: 0.6em;
   background: rgba(0, 0, 0, 0.3);
-  border-top: 1px solid #6f42c1;
+  border-top: 1px solid var(--popover-primary);
   text-align: center;
+  flex-shrink: 0;
 }
 
 .fanfare-timestamp {
   margin: 0;
   font-size: 0.85em;
-  color: #808080;
+  color: var(--popover-text-muted);
   font-style: italic;
 }
 
-/* Discrete Scrollbar */
+/* Scrollbar */
 .fanfare-body::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
 .fanfare-body::-webkit-scrollbar-button {
@@ -512,23 +569,26 @@ html, body {
 }
 
 .fanfare-body::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(45, 45, 45, 0.5);
+  border-radius: 6px;
 }
 
 .fanfare-body::-webkit-scrollbar-thumb {
-  background: rgba(159, 130, 246, 0.5);
-  border-radius: 4px;
-  border: 1px solid rgba(111, 66, 193, 0.2);
-  transition: background 0.3s ease;
+  background: linear-gradient(180deg, #a78bfa, #6f42c1);
+  border-radius: 6px;
+  border: 2px solid rgba(45, 45, 45, 0.8);
+  transition: all 0.3s ease;
+  min-height: 40px;
 }
 
 .fanfare-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(159, 130, 246, 0.8);
+  background: linear-gradient(180deg, #c4b5fd, #7c3aed);
+  box-shadow: 0 0 8px rgba(111, 66, 193, 0.6);
 }
 
 /* Firefox Scrollbar */
 .fanfare-body {
-  scrollbar-color: rgba(159, 130, 246, 0.5) transparent;
+  scrollbar-color: #a78bfa rgba(45, 45, 45, 0.5);
   scrollbar-width: thin;
 }
 

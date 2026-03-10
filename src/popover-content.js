@@ -2,6 +2,34 @@ import OBR from '@owlbear-rodeo/sdk';
 import './player-styles.css';
 
 /**
+ * Theme manager - Apply OWL Bear theme colors to the popover
+ */
+function applyTheme(theme) {
+  const isDark = theme.mode === 'DARK';
+  const root = document.documentElement;
+  
+  if (isDark) {
+    // Dark theme (use OWL Bear colors)
+    root.style.setProperty('--popover-bg', theme.background.default);
+    root.style.setProperty('--popover-surface', theme.background.paper);
+    root.style.setProperty('--popover-text', theme.text.primary);
+    root.style.setProperty('--popover-text-muted', theme.text.secondary);
+    root.style.setProperty('--popover-primary', theme.primary.main);
+    root.style.setProperty('--popover-border', theme.secondary.dark);
+  } else {
+    // Light theme (adjusted for readability on light backgrounds)
+    root.style.setProperty('--popover-bg', theme.background.default);
+    root.style.setProperty('--popover-surface', theme.background.paper);
+    root.style.setProperty('--popover-text', theme.text.primary);
+    root.style.setProperty('--popover-text-muted', theme.text.secondary);
+    root.style.setProperty('--popover-primary', theme.primary.main);
+    root.style.setProperty('--popover-border', theme.secondary.light);
+  }
+  
+  console.log('[Fanfare Popover] Theme applied:', theme.mode);
+}
+
+/**
  * Popover content script
  * Receives reward data from the broadcast and displays it
  */
@@ -192,6 +220,22 @@ class PopoverContent {
 // Look for reward data in the URL or parent context
 console.log('[Fanfare Popover] Script loaded, looking for reward data');
 const popover = new PopoverContent();
+
+// Initialize theme
+OBR.onReady(async () => {
+  try {
+    const theme = await OBR.theme.getTheme();
+    applyTheme(theme);
+    
+    // Listen for theme changes
+    OBR.theme.onChange((newTheme) => {
+      console.log('[Fanfare Popover] Theme changed');
+      applyTheme(newTheme);
+    });
+  } catch (e) {
+    console.warn('[Fanfare Popover] Failed to initialize theme:', e);
+  }
+});
 
 // Try to extract data from URL params or window context
 const urlParams = new URLSearchParams(window.location.search);

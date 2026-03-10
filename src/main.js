@@ -2,6 +2,41 @@ import OBR from '@owlbear-rodeo/sdk';
 import './style.css';
 
 /**
+ * Theme manager - Apply OWL Bear theme colors to the extension
+ */
+function applyTheme(theme) {
+  const isDark = theme.mode === 'DARK';
+  const root = document.documentElement;
+  
+  if (isDark) {
+    // Dark theme (use OWL Bear colors)
+    root.style.setProperty('--primary', theme.primary.main);
+    root.style.setProperty('--primary-dark', theme.primary.dark);
+    root.style.setProperty('--secondary', theme.secondary.main);
+    root.style.setProperty('--bg', theme.background.default);
+    root.style.setProperty('--surface', theme.background.paper);
+    root.style.setProperty('--surface-light', theme.background.paper);
+    root.style.setProperty('--text', theme.text.primary);
+    root.style.setProperty('--text-muted', theme.text.secondary);
+    root.style.setProperty('--border', theme.secondary.dark);
+  } else {
+    // Light theme (adjusted for readability)
+    root.style.setProperty('--primary', theme.primary.main);
+    root.style.setProperty('--primary-dark', theme.primary.dark);
+    root.style.setProperty('--secondary', theme.secondary.main);
+    root.style.setProperty('--bg', theme.background.default);
+    root.style.setProperty('--surface', theme.background.paper);
+    // For light theme, use paper for input backgrounds (typically white/very light)
+    root.style.setProperty('--surface-light', theme.background.paper);
+    root.style.setProperty('--text', theme.text.primary);
+    root.style.setProperty('--text-muted', theme.text.secondary);
+    root.style.setProperty('--border', theme.secondary.light);
+  }
+  
+  console.log('[Fanfare] Theme applied:', theme.mode);
+}
+
+/**
  * Popover manager - used by both GM and Players to display rewards
  */
 class FanfareManager {
@@ -39,7 +74,7 @@ class FanfareManager {
         id: popoverId,
         url: url,
         width: 700,
-        height: 300,
+        height: 320,
         anchorPosition: { left: width / 2, top: 20 },
         anchorOrigin: { horizontal: 'CENTER', vertical: 'TOP' },
         transformOrigin: { horizontal: 'CENTER', vertical: 'TOP' },
@@ -267,7 +302,12 @@ async function broadcastToPlayers() {
 function previewPopover() {
   const payload = buildPayload();
   console.log('Preview payload:', payload);
-  showStatus('Preview payload (see console)', 'info');
+  if (fanfare) {
+    fanfare.showPopover(payload);
+    showStatus('Previewing...', 'info');
+  } else {
+    showStatus('Popover manager not ready', 'error');
+  }
 }
 
 // Reset form
@@ -394,6 +434,16 @@ const appContainer = document.querySelector('.container');
 OBR.onReady(async () => {
   try {
     console.log('[Fanfare] Extension ready! OBR context initialized');
+    
+    // Initialize theme
+    const theme = await OBR.theme.getTheme();
+    applyTheme(theme);
+    
+    // Listen for theme changes
+    OBR.theme.onChange((newTheme) => {
+      console.log('[Fanfare] Theme changed');
+      applyTheme(newTheme);
+    });
     
     // Get user role - try different methods for compatibility
     try {
