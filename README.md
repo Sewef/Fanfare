@@ -1,193 +1,235 @@
-# 🎉 Fanfare - Extension Owlbear Rodeo
+# 🎉 Fanfare
 
-Une extension pour **Owlbear Rodeo** qui permet à un Maître de Jeu d'envoyer des récompenses de fin de rencontre aux joueurs avec des animations spectaculaires !
+A stunning rewards broadcaster extension for **OWL Bear Rodeo** that brings excitement to your gaming sessions!
 
-## ✨ Fonctionnalités
+Display XP progression and loot drops to your players with beautiful animations, theme-aware styling, and seamless integration.
 
-### Pour le MJ (interface d'administration)
-- **Barre d'XP animée** : Configurez la progression du niveau avec une animation fluide
-  - Valeur actuelle en pourcentage
-  - Nouvelle valeur en pourcentage
-  - Aperçu en temps réel
-  
-- **Système de loot** : Ajoutez des objets avec leurs propriétés
-  - Nom de l'objet
-  - Quantité
-  - Rareté (Commune, Peu commune, Rare, Très rare, Légendaire)
-  
-- **Broadcast** : Envoyez les récompenses aux joueurs directement via OBR.broadcast
+## ✨ Features
 
-### Pour les Joueurs
-- **Popover animé** qui apparaît au centre de l'écran
-- Animation d'entrée dynamique et fluide
-- Barre XP avec animation de remplissage
-- Liste de butin avec animations décalées
-- Codes couleur par rareté
-- Gestion des fermetures (manuel ou automatique après 10 secondes)
+- **XP Progress Bars** - Animated XP progression with smooth transitions
+- **Loot Distribution** - Display item drops with rarity-based styling (Common, Uncommon, Rare, Very Rare, Legendary)
+- **Theme Awareness** - Automatically adapts to OWL Bear's light and dark themes
+- **Responsive Design** - Works beautifully on all screen sizes
+- **Export/Import** - Save and load loot configurations as JSON
+- **Auto-Save** - Optional automatic config saving to Scene or Room metadata
+- **Beautiful Animations** - Smooth popover animations, XP bar fills, and loot item reveals
+- **Customizable Headers** - Add custom titles and subtitles to your reward broadcasts
+- **Local Preview** - Test popover appearance before broadcasting to players
 
-## 🛠️ Installation
+## 🚀 Quick Start
 
-### Prérequis
-- Node.js 18+
-- npm
+### Installation
 
-### Setup
-```bash
-# Installer les dépendances
-npm install
+1. Clone or download this repository
+2. Get the manifest URL from `public/manifest.json`
+3. Add the extension to OWL Bear Rodeo via the extension menu
 
-# Démarrer le serveur de développement
-npm run dev
+### Basic Usage
 
-# Builder pour la production
-npm run build
+1. **Open the extension** - GMs see the control panel, players see a joke message
+2. **Set up rewards:**
+   - Configure XP current/new values and max XP
+   - Add loot items with names, quantities, and rarity levels
+3. **Customize:**
+   - Edit popover title and subtitle
+   - Toggle XP bar and loot display
+4. **Send:**
+   - Click "🎯 Send" to broadcast to all players
+   - Click "👁️ Preview" to see the popover yourself first
+
+## 🎮 GM Features
+
+### XP Bar Configuration
+- **Max XP**: Total XP for the level
+- **Current XP**: Starting percentage (0% to 100%)
+- **New XP**: Ending percentage (0% to 100%)
+- Includes difference indicator (+50%, -25%, etc.)
+
+### Loot Management
+- **Quick Add**: Enter item name, select quantity and rarity
+- **Demo Mode**: Load example items instantly
+- **Export JSON**: Save your loot configuration for later
+- **Import JSON**: Load previously saved configurations
+
+### Configuration Save
+- **Save Targets**: Store config to Scene or Room metadata
+- **Auto-Save**: Automatically save when broadcasting
+- **Persistent**: Configs persist across sessions
+
+## 📊 Loot Rarity Levels
+
+- 🟩 **Common** - Gray, basic items
+- 🟦 **Uncommon** - Green, more valuable
+- 🟪 **Rare** - Blue, powerful items
+- 🟨 **Very Rare** - Purple, legendary quality
+- 🟧 **Legendary** - Orange, mythic items
+
+Each rarity has unique colors and glowing auras in the popover.
+
+## 🎨 Popover Features
+
+### Header
+- Customizable title and subtitle
+- Smooth shimmer animation
+- Close button for players
+
+### XP Section
+- Animated progress bar (2 second fill)
+- Current/New percentage display
+- XP difference indicator
+- Gradient fill with glow effects
+
+### Loot Section
+- Grid layout (auto-fitting items)
+- Rarity-based color coding
+- Staggered reveal animations
+- Item name and quantity display
+- Quantity badges with theme colors
+
+### Theme Support
+- Dark theme: Deep grays and vibrant purples
+- Light theme: Adapts to OWL Bear's light palette
+- Automatic theme switching
+- Custom CSS variables for easy customization
+
+## ⌨️ Keyboard Shortcuts
+
+- **Enter** in item name field: Add item to loot table
+- **Ctrl+C**: Copy exported JSON (in export modal)
+- **Ctrl+V**: Paste JSON (in import modal)
+
+## 📱 JSON Format
+
+### Export Format
+```json
+[
+  {
+    "name": "Sword of Power",
+    "quantity": 1,
+    "rarity": "legendary"
+  },
+  {
+    "name": "Gold Coins",
+    "quantity": 100,
+    "rarity": "common"
+  }
+]
 ```
 
-## 📋 Structure du Projet
+Copy the exported JSON to share configurations with other GMs.
 
-```
-fanfare/
-├── index.html           # Interface du MJ (admin)
-├── player.html          # Vue joueurs (popover)
-├── vite.config.js       # Configuration Vite
-├── package.json         # Dépendances
-└── src/
-    ├── main.js          # Logique de l'interface MJ
-    ├── player.js        # Logique du popover joueurs
-    ├── style.css        # Styles de l'interface MJ
-    └── player-styles.css # Styles du popover joueurs
-```
+## 🔧 Configuration
 
-## 🚀 Configuration Owlbear
+### GM Settings
+- **Popover Title**: Customize the rewards header (default: "🎉 Rewards")
+- **Popover Subtitle**: Add context to rewards (optional)
+- **Include XP Bar**: Toggle XP progression display
+- **Include Loot**: Toggle loot drops display
+- **Auto-Save on Send**: Automatically save config when broadcasting
 
-Pour enregistrer l'extension dans Owlbear Rodeo, vous devez créer un manifest file ou configurer l'URL de votre extension.
+### Save Targets
+- **Disabled** (default): Don't save automatically
+- **Scene**: Save config to current scene (all players see it)
+- **Room**: Save config to room metadata (persists across scenes)
 
-### Option 1 : Mode développement
-1. Ouvrez Owlbear Rodeo
-2. Allez dans les paramètres de l'extension
-3. Ajoutez une extension personnalisée avec :
-   - **URL Admin** : `http://localhost:5173` (ou votre URL de dev)
-   - **URL Player** : `http://localhost:5173/player.html`
+## 🎯 Broadcasting
 
-### Option 2 : Installation en production
-Déployez sur un serveur (Vercel, Netlify, etc.) et utilisez les URLs de production.
+### Local Preview
+- Click "👁️ Preview" to see the popover on **your screen only**
+- Does NOT send to other players
+- Useful for testing before broadcasting
 
-## 📡 Utilisation
+### Broadcast to All Players
+- Click "🎯 Send" to display rewards to **all players**
+- Popover appears as a modal overlay
+- Players can close the popover
 
-### Du côté du MJ
+## 🎨 Customization
 
-1. **Configurer la barre XP**
-   - Entrez la valeur actuelle (0-100%)
-   - Entrez la nouvelle valeur (0-100%)
-   - Voir l'aperçu en temps réel
-
-2. **Ajouter du loot**
-   - Entrez le nom de l'objet
-   - Choisissez la quantité
-   - Sélectionnez la rareté
-   - Cliquez "Ajouter objet"
-
-3. **Envoyer aux joueurs**
-   - Cliquez le bouton "🎯 Envoyer aux joueurs"
-   - Le popover animé s'affichera chez tous les joueurs
-
-### Du côté des Joueurs
-- Le popover s'affiche automatiquement quand le MJ envoie
-- La barre XP s'anime de l'ancienne vers la nouvelle valeur
-- Les objets de loot apparaissent en cascade
-- Fermeture manuelle ou automatique après 10 secondes
-
-## 🎨 Système de Rareté
-
-Chaque rareté a sa propre couleur :
-- **Commune** : Gris (#9a9a9a)
-- **Peu commune** : Vert (#1eff00)
-- **Rare** : Bleu (#0070dd)
-- **Très rare** : Violet (#a335ee)
-- **Légendaire** : Orange (#ff8000)
-
-## 🔧 Customisation
-
-### Modifier les couleurs
-Éditez les variables CSS dans `src/style.css` et `src/player-styles.css` :
+### Colors
+Edit `src/style.css` root variables:
 ```css
 :root {
-  --primary: #6f42c1;    /* Violet primaire */
-  --color-legendary: #ff8000;  /* Orange légendaire */
+  --primary: #6f42c1;
+  --bg: #1a1a1a;
+  --text: #ffffff;
   /* ... */
 }
 ```
 
-### Modifier les durées d'animation
-Dans `src/player-styles.css`, cherchez les `@keyframes` et ajustez les durées.
+The extension automatically applies OWL Bear's theme colors.
 
-### Ajouter des rarités
-1. Ajoutez la nouvelle option dans `index.html` (select #itemRarity)
-2. Ajoutez la couleur dans les variables CSS
-3. Mettez à jour `getRarityLabel()` dans `main.js` et `player.js`
+### Animations
+- XP bar fills over 2 seconds
+- Loot items stagger reveal at 100ms intervals
+- Smooth popover open/close transitions
+- Glow and pulse effects on interactive elements
 
-## 🐛 Dépannage
+## 🛠️ Development
 
-### Le popover n'apparaît pas
-- Vérifiez que vous avez bien configuré l'URL Player correctement
-- Vérifiez la console du navigateur pour les erreurs
-- Assurez-vous que OBR.broadcast fonctionne
-
-### Les animations sont lentes
-- Vérifiez votre connexion réseau
-- Réduisez les durées des animations dans le CSS
-- Vérifiez les performances du navigateur
-
-### L'interface MJ ne s'affiche pas
-- Redémarrez le serveur dev (`npm run dev`)
-- Vérifiez que le port 5173 est disponible
-- Videz le cache du navigateur
-
-## 📝 Format du Payload
-
-Quand vous envoyez les récompenses, voici le format du message :
-
-```javascript
-{
-  type: 'fanfare_endofencounter',
-  xp: {
-    current: 30,    // Pourcentage actuel
-    new: 75         // Nouveau pourcentage
-  },
-  loot: [
-    {
-      name: 'Épée de Flamme',
-      quantity: 1,
-      rarity: 'legendary'
-    },
-    {
-      name: 'Potion de Soin',
-      quantity: 5,
-      rarity: 'common'
-    }
-  ],
-  timestamp: 1710000000000
-}
+### Setup
+```bash
+npm install
+npm run dev
 ```
 
-## 🎯 Fonctionnalités Futures
+### Build
+```bash
+npm run build
+```
 
-- [ ] Son et effets sonores
-- [ ] Animations de confettis
-- [ ] Système de messages personnalisés
-- [ ] Sauvegarde des présets de loot courants
-- [ ] Intégration avec les feuilles de personnages
-- [ ] Historique des récompenses
-- [ ] Animations au choix (discrete, fancy, epic, etc.)
+### Project Structure
+```
+Fanfare/
+├── index.html              # GM control panel
+├── popover-content.html    # Player popover view
+├── src/
+│   ├── main.js            # GM logic & theme manager
+│   ├── popover-content.js # Popover logic & renderer
+│   ├── style.css          # GM styles
+│   └── player-styles.css  # Popover styles
+├── public/
+│   ├── manifest.json      # Extension manifest
+│   └── store.md          # OWL Bear store listing
+└── vite.config.js         # Build configuration
+```
 
-## 📄 Licence
+## 📋 API Integration
 
-MIT
+Built with the **OWL Bear Rodeo SDK**:
+- `OBR.broadcast` - Send messages to players
+- `OBR.popover` - Display reward popovers
+- `OBR.theme` - Detect and adapt to theme changes
+- `OBR.scene` / `OBR.room` - Store configurations
+- `OBR.viewport` - Position popovers dynamically
 
-## 👤 Auteur
+## 🐛 Known Limitations
 
-Créé pour les amoureux de jeux de rôle sur Owlbear Rodeo !
+- Clipboard API is restricted in OWL Bear's iframe; fallback to Ctrl+C/Ctrl+V
+- Popover position is fixed at broadcast time (reloading page may shift it)
+- Configuration save requires GM permissions
+
+## 📖 Tips & Tricks
+
+1. **Reusable Configs**: Export loot templates and import them for future sessions
+2. **Batch Rewards**: Set up all rewards before broadcasting for consistency
+3. **Theme Testing**: Change OWL Bear's theme in settings to see real-time adaptation
+4. **Demo Items**: Use "Demo" button to populate example rewards for testing
+
+## 🤝 Contributing
+
+Pull requests welcome! Feel free to:
+- Report bugs
+- Suggest features
+- Improve animations
+- Add new rarity types
+
+## 📄 License
+
+MIT License - Feel free to use and modify for your own games!
 
 ---
 
-**Besoin d'aide ?** Consultez la [documentation Owlbear SDK](https://sdk.owlbear.rodeo/)
+**Made with 🎉 for OWL Bear Rodeo gamers everywhere!**
+
+For issues or feature requests, please check the GitHub repository.

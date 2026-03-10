@@ -33,7 +33,7 @@ function applyTheme(theme) {
     root.style.setProperty('--border', theme.secondary.light);
   }
   
-  console.log('[Fanfare] Theme applied:', theme.mode);
+  // console.log('[Fanfare] Theme applied:', theme.mode);
 }
 
 /**
@@ -43,30 +43,30 @@ class FanfareManager {
   constructor() {
     this.popovers = new Map();
     this.lastPopoverId = null;
-    console.log('[Fanfare] FanfareManager initialized');
+    // console.log('[Fanfare] FanfareManager initialized');
   }
 
   async showPopover(payload) {
     try {
-      console.log('[Fanfare] showPopover called with payload:', payload);
+      // console.log('[Fanfare] showPopover called with payload:', payload);
       
       // Close previous popover if it exists
       if (this.lastPopoverId) {
-        console.log('[Fanfare] Closing previous popover:', this.lastPopoverId);
+        // console.log('[Fanfare] Closing previous popover:', this.lastPopoverId);
         try {
           await OBR.popover.close(this.lastPopoverId);
-          console.log('[Fanfare] Previous popover closed successfully');
+          // console.log('[Fanfare] Previous popover closed successfully');
         } catch (err) {
           console.warn('[Fanfare] Error closing previous popover:', err);
         }
       }
       
       const popoverId = 'fanfare-rewards';
-      console.log('[Fanfare] Using popover ID:', popoverId);
+      // console.log('[Fanfare] Using popover ID:', popoverId);
       
       const dataParam = encodeURIComponent(JSON.stringify(payload));
       const url = `/popover-content.html?data=${dataParam}`;
-      console.log('[Fanfare] Popover URL:', url);
+      // console.log('[Fanfare] Popover URL:', url);
 
       const width = await OBR.viewport.getWidth();
 
@@ -84,11 +84,11 @@ class FanfareManager {
         hidePaper: true
       });
 
-      console.log('[Fanfare] Popover opened successfully!');
+      // console.log('[Fanfare] Popover opened successfully!');
       this.lastPopoverId = popoverId;
 
       this.popovers.set(popoverId, payload);
-      console.log('[Fanfare] Popover stored. Total popovers:', this.popovers.size);
+      // console.log('[Fanfare] Popover stored. Total popovers:', this.popovers.size);
     } catch (error) {
       console.error('[Fanfare] Failed to open popover:', error);
     }
@@ -125,6 +125,21 @@ const saveTargetSelect = document.querySelector('#saveTarget');
 const autoSaveCheckbox = document.querySelector('#autoSave');
 const saveBtn = document.querySelector('#saveBtn');
 
+// Export/Import JSON elements
+const exportJsonBtn = document.querySelector('#exportJsonBtn');
+const importJsonBtn = document.querySelector('#importJsonBtn');
+const exportJsonModal = document.querySelector('#exportJsonModal');
+const importJsonModal = document.querySelector('#importJsonModal');
+const exportJsonText = document.querySelector('#exportJsonText');
+const importJsonText = document.querySelector('#importJsonText');
+const copyExportBtn = document.querySelector('#copyExportBtn');
+const pasteImportBtn = document.querySelector('#pasteImportBtn');
+const confirmImportBtn = document.querySelector('#confirmImportBtn');
+const exportJsonClose = document.querySelector('#exportJsonClose');
+const importJsonClose = document.querySelector('#importJsonClose');
+const closeExportBtn = document.querySelector('#closeExportBtn');
+const closeImportBtn = document.querySelector('#closeImportBtn');
+
 // Utility: Show status message
 function showStatus(message, type = 'info') {
   if (!statusEl) return; // Safely handle missing element
@@ -139,7 +154,7 @@ function updateXpPreview() {
   const maxXp = Math.max(1, parseInt(maxXpInput.value) || 100);
   const newValue = Math.max(0, parseInt(newXpInput.value) || 0);
   const percentage = Math.min(100, Math.round((newValue / maxXp) * 100));
-  console.log(`[Fanfare MJ] XP preview updated: ${newValue}/${maxXp} = ${percentage}%`);
+  // console.log(`[Fanfare DM] XP preview updated: ${newValue}/${maxXp} = ${percentage}%`);
   previewBar.style.width = percentage + '%';
   previewText.textContent = percentage + '%';
 }
@@ -185,16 +200,16 @@ function addItem() {
   const rarity = itemRaritySelect.value;
 
   if (!name) {
-    console.warn('[Fanfare MJ] Item name is empty');
+    console.warn('[Fanfare DM] Item name is empty');
     showStatus('Enter item name', 'error');
     itemNameInput.focus();
     return;
   }
 
   const newItem = { name, quantity, rarity };
-  console.log('[Fanfare MJ] Adding item:', newItem);
+  // console.log('[Fanfare DM] Adding item:', newItem);
   lootItems.push(newItem);
-  console.log('[Fanfare MJ] Total items in loot:', lootItems.length);
+  // console.log('[Fanfare DM] Total items in loot:', lootItems.length);
   itemNameInput.value = '';
   itemQuantityInput.value = '1';
   itemRaritySelect.value = 'common';
@@ -206,16 +221,16 @@ function addItem() {
 
 // Remove loot item
 window.removeItem = function(index) {
-  console.log('[Fanfare MJ] Removing item at index:', index);
+  // console.log('[Fanfare DM] Removing item at index:', index);
   lootItems.splice(index, 1);
-  console.log('[Fanfare MJ] Items remaining:', lootItems.length);
+  // console.log('[Fanfare DM] Items remaining:', lootItems.length);
   renderLootList();
   showStatus('Item removed', 'info');
 };
 
 // Load example items
 function loadExampleItems() {
-  console.log('[Fanfare MJ] Loading example items');
+  // console.log('[Fanfare DM] Loading example items');
   lootItems = [
     { name: 'Bouteille d\'huile', quantity: 1, rarity: 'uncommon' },
     { name: 'Papier Toilette', quantity: 1, rarity: 'rare' },
@@ -223,7 +238,7 @@ function loadExampleItems() {
     { name: 'Raviolis', quantity: 5, rarity: 'very-rare' },
     { name: 'Sandwich au poulet', quantity: 1, rarity: 'legendary' }
   ];
-  console.log('[Fanfare MJ] Example items loaded:', lootItems.length);
+  // console.log('[Fanfare DM] Example items loaded:', lootItems.length);
   renderLootList();
   showStatus('Example items loaded!', 'success');
 }
@@ -254,54 +269,169 @@ function buildPayload() {
     loot: includeLoot ? [...lootItems] : [],
     timestamp: Date.now()
   };
-  console.log('[Fanfare MJ] Payload built:', payload);
+  // console.log('[Fanfare DM] Payload built:', payload);
   return payload;
 }
 
 // Broadcast to players
 async function broadcastToPlayers() {
-  console.log('[Fanfare MJ] Broadcast button clicked');
+  // console.log('[Fanfare DM] Broadcast button clicked');
 
   if (!context) {
-    console.warn('[Fanfare MJ] Context is not available (but continuing...)');
+    console.warn('[Fanfare DM] Context is not available (but continuing...)');
   }
 
   try {
     broadcastBtn.disabled = true;
     const payload = buildPayload();
-    console.log('[Fanfare MJ] Sending broadcast with payload:', payload);
+    // console.log('[Fanfare DM] Sending broadcast with payload:', payload);
     
     await OBR.broadcast.sendMessage('com.sewef.fanfare', {
       fanfare_endofencounter: payload
     }, { destination: "ALL" });
-    console.log('[Fanfare MJ] Broadcast sent successfully!');
+    // console.log('[Fanfare DM] Broadcast sent successfully!');
     showStatus('✓ Sent to players!', 'success');
     
     // Show popover to GM (non-blocking)
-    console.log('[Fanfare MJ] Showing popover to GM');
+    // console.log('[Fanfare DM] Showing popover to GM');
     if (fanfare) {
       fanfare.showPopover(payload).catch((err) => {
-        console.warn('[Fanfare MJ] Error showing popover:', err);
+        console.warn('[Fanfare DM] Error showing popover:', err);
       });
     }
 
     // Auto save if enabled
     if (autoSaveCheckbox && autoSaveCheckbox.checked) {
-      console.log('[Fanfare MJ] Auto saving config');
+      // console.log('[Fanfare DM] Auto saving config');
       await saveConfig();
     }
   } catch (error) {
-    console.error('[Fanfare MJ] Broadcast error:', error);
+    console.error('[Fanfare DM] Broadcast error:', error);
     showStatus('Broadcast error', 'error');
   } finally {
     broadcastBtn.disabled = false;
   }
 }
 
+// Modal management functions
+function openModal(modal) {
+  if (modal) modal.classList.add('show');
+}
+
+function closeModal(modal) {
+  if (modal) modal.classList.remove('show');
+}
+
+// Export loot as JSON
+function exportLootJson() {
+  const json = JSON.stringify(lootItems, null, 2);
+  exportJsonText.value = json;
+  openModal(exportJsonModal);
+  // console.log('[Fanfare DM] Loot exported as JSON:', json);
+}
+
+// Import loot from JSON
+function importLootJson() {
+  try {
+    const json = importJsonText.value.trim();
+    if (!json) {
+      showStatus('Please paste JSON content', 'error');
+      return;
+    }
+
+    const importedItems = JSON.parse(json);
+    
+    if (!Array.isArray(importedItems)) {
+      showStatus('JSON must be an array of items', 'error');
+      return;
+    }
+
+    // Validate items
+    const validItems = importedItems.every(item => 
+      item.name && item.quantity && item.rarity
+    );
+
+    if (!validItems) {
+      showStatus('Invalid item format. Each item needs: name, quantity, rarity', 'error');
+      return;
+    }
+
+    lootItems = importedItems;
+    renderLootList();
+    closeModal(importJsonModal);
+    importJsonText.value = '';
+    showStatus(`✓ Imported ${lootItems.length} items!`, 'success');
+    // console.log('[Fanfare DM] Loot imported from JSON:', lootItems);
+  } catch (error) {
+    console.error('[Fanfare DM] JSON import error:', error);
+    showStatus('Invalid JSON format', 'error');
+  }
+}
+
+// Copy to clipboard
+// Copy to clipboard (with fallback for restricted environments)
+function copyToClipboard(text) {
+  if (!text) return;
+  
+  // Try using the modern Clipboard API first
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        showStatus('✓ Copied to clipboard!', 'success');
+      })
+      .catch(() => {
+        // Fallback if Clipboard API fails
+        copyToClipboardFallback(text);
+      });
+  } else {
+    // Fallback for restricted environments (like OWL Bear iframes)
+    copyToClipboardFallback(text);
+  }
+}
+
+// Fallback copy: select the text and ask user to copy
+function copyToClipboardFallback(text) {
+  exportJsonText.select();
+  exportJsonText.focus();
+  
+  try {
+    const success = document.execCommand('copy');
+    if (success) {
+      showStatus('✓ Copied to clipboard!', 'success');
+    } else {
+      showStatus('Press Ctrl+C to copy the selected text', 'info');
+    }
+  } catch (error) {
+    console.warn('[Fanfare DM] Fallback copy failed:', error);
+    showStatus('Press Ctrl+C to copy the selected text', 'info');
+  }
+}
+
+// Paste from clipboard (with fallback for restricted environments)
+function pasteFromClipboard() {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.readText()
+      .then(text => {
+        importJsonText.value = text;
+        importJsonText.focus();
+        showStatus('✓ Pasted from clipboard!', 'success');
+      })
+      .catch(() => {
+        // Fallback: tell user to paste manually
+        importJsonText.focus();
+        showStatus('Press Ctrl+V to paste your JSON', 'info');
+      });
+  } else {
+    // Fallback for restricted environments
+    importJsonText.focus();
+    showStatus('Press Ctrl+V to paste your JSON', 'info');
+  }
+}
+
 // Preview popover (for testing)
 function previewPopover() {
   const payload = buildPayload();
-  console.log('Preview payload:', payload);
+  // console.log('Preview payload:', payload);
   if (fanfare) {
     fanfare.showPopover(payload);
     showStatus('Previewing...', 'info');
@@ -329,7 +459,7 @@ function resetForm() {
 // Save config to OBR metadata
 async function saveConfig() {
   if (!saveTargetSelect || saveTargetSelect.value === 'none') {
-    console.warn('[Fanfare MJ] Save target is disabled');
+    console.warn('[Fanfare DM] Save target is disabled');
     showStatus('Save target disabled', 'info');
     return;
   }
@@ -349,14 +479,14 @@ async function saveConfig() {
       await OBR.scene.setMetadata({
         'com.sewef.fanfare': configData
       });
-      console.log('[Fanfare MJ] Config saved to scene:', configData);
+      // console.log('[Fanfare DM] Config saved to scene:', configData);
       showStatus('✓ Config saved to scene!', 'success');
     } else if (saveTargetSelect.value === 'room') {
       // Room metadata saving
       await OBR.room.setMetadata({
         'com.sewef.fanfare': configData
       });
-      console.log('[Fanfare MJ] Config saved to room:', configData);
+      // console.log('[Fanfare DM] Config saved to room:', configData);
       showStatus('✓ Config saved to room!', 'success');
     }
 
@@ -366,9 +496,9 @@ async function saveConfig() {
         updatedAt: Date.now()
       }
     }, { destination: "REMOTE" });
-    console.log('[Fanfare MJ] Config update notification broadcast');
+    // console.log('[Fanfare DM] Config update notification broadcast');
   } catch (error) {
-    console.error('[Fanfare MJ] Error saving config:', error);
+    console.error('[Fanfare DM] Error saving config:', error);
     showStatus('Save error', 'error');
   }
 }
@@ -391,7 +521,7 @@ async function loadConfig() {
     }
 
     if (configData) {
-      console.log('[Fanfare MJ] Config loaded:', configData);
+      // console.log('[Fanfare DM] Config loaded:', configData);
       if (popoverTitleInput && configData.title) popoverTitleInput.value = configData.title;
       if (popoverSubtitleInput && configData.subtitle) popoverSubtitleInput.value = configData.subtitle;
       if (maxXpInput && configData.maxXp) maxXpInput.value = configData.maxXp;
@@ -399,10 +529,10 @@ async function loadConfig() {
       if (newXpInput && configData.new) newXpInput.value = configData.new;
       if (autoSaveCheckbox && configData.autoSave) autoSaveCheckbox.checked = configData.autoSave;
       updateXpPreview();
-      console.log('[Fanfare MJ] Config restored');
+      // console.log('[Fanfare DM] Config restored');
     }
   } catch (error) {
-    console.warn('[Fanfare MJ] Could not load config:', error);
+    console.warn('[Fanfare DM] Could not load config:', error);
   }
 }
 
@@ -412,10 +542,34 @@ if (newXpInput) newXpInput.addEventListener('input', updateXpPreview);
 if (maxXpInput) maxXpInput.addEventListener('input', updateXpPreview);
 if (addItemBtn) addItemBtn.addEventListener('click', addItem);
 if (exampleBtn) exampleBtn.addEventListener('click', loadExampleItems);
+if (exportJsonBtn) exportJsonBtn.addEventListener('click', exportLootJson);
+if (importJsonBtn) importJsonBtn.addEventListener('click', () => openModal(importJsonModal));
 if (broadcastBtn) broadcastBtn.addEventListener('click', broadcastToPlayers);
 if (previewBtn) previewBtn.addEventListener('click', previewPopover);
 if (resetBtn) resetBtn.addEventListener('click', resetForm);
 if (saveBtn) saveBtn.addEventListener('click', saveConfig);
+
+// Export/Import modal listeners
+if (copyExportBtn) copyExportBtn.addEventListener('click', () => copyToClipboard(exportJsonText.value));
+if (pasteImportBtn) pasteImportBtn.addEventListener('click', pasteFromClipboard);
+if (confirmImportBtn) confirmImportBtn.addEventListener('click', importLootJson);
+if (exportJsonClose) exportJsonClose.addEventListener('click', () => closeModal(exportJsonModal));
+if (importJsonClose) importJsonClose.addEventListener('click', () => closeModal(importJsonModal));
+if (closeExportBtn) closeExportBtn.addEventListener('click', () => closeModal(exportJsonModal));
+if (closeImportBtn) closeImportBtn.addEventListener('click', () => closeModal(importJsonModal));
+
+// Close modals when clicking outside
+if (exportJsonModal) {
+  exportJsonModal.addEventListener('click', (e) => {
+    if (e.target === exportJsonModal) closeModal(exportJsonModal);
+  });
+}
+if (importJsonModal) {
+  importJsonModal.addEventListener('click', (e) => {
+    if (e.target === importJsonModal) closeModal(importJsonModal);
+  });
+}
+
 if (saveTargetSelect) saveTargetSelect.addEventListener('change', () => {
   localStorage.setItem('fanfare-save-target', saveTargetSelect.value);
 });
@@ -433,7 +587,7 @@ const appContainer = document.querySelector('.container');
 // Initialize with OBR
 OBR.onReady(async () => {
   try {
-    console.log('[Fanfare] Extension ready! OBR context initialized');
+    // console.log('[Fanfare] Extension ready! OBR context initialized');
     
     // Initialize theme
     const theme = await OBR.theme.getTheme();
@@ -441,14 +595,14 @@ OBR.onReady(async () => {
     
     // Listen for theme changes
     OBR.theme.onChange((newTheme) => {
-      console.log('[Fanfare] Theme changed');
+      // console.log('[Fanfare] Theme changed');
       applyTheme(newTheme);
     });
     
     // Get user role - try different methods for compatibility
     try {
       userRole = (await OBR.player.getRole?.()) || 'GM'; // Default to GM if getRole fails
-      console.log('[Fanfare] User role (via OBR.getRole):', userRole);
+      // console.log('[Fanfare] User role (via OBR.getRole):', userRole);
     } catch (roleError) {
       console.warn('[Fanfare] Could not determine role, defaulting to GM:', roleError);
       userRole = 'GM';
@@ -460,12 +614,12 @@ OBR.onReady(async () => {
     context = true;
     
     if (userRole === 'GM') {
-      console.log('[Fanfare] GM mode - showing control panel');      // Load saved config
+      // console.log('[Fanfare] GM mode - showing control panel');      // Load saved config
       await loadConfig();      updateXpPreview();
       renderLootList();
       showStatus('GM Mode: Rewards Broadcaster Ready', 'success');
     } else {
-      console.log('[Fanfare] Player mode - hiding control panel and showing joke');
+      // console.log('[Fanfare] Player mode - hiding control panel and showing joke');
       // Hide the entire interface for players and show a joke
       if (appContainer) {
         appContainer.innerHTML = `
@@ -480,15 +634,15 @@ OBR.onReady(async () => {
       showStatus('Player Mode: No Access (Nice Try!)', 'info');
     }
     
-    console.log('[Fanfare] UI initialized successfully');
+    // console.log('[Fanfare] UI initialized successfully');
     
     // Register broadcast listener AFTER OBR is ready
     OBR.broadcast.onMessage('com.sewef.fanfare', (message) => {
-      console.log('[Fanfare] Received broadcast message:', message);
+      // console.log('[Fanfare] Received broadcast message:', message);
       
       // Handle fan fare end of encounter broadcasts
       if (message.data?.fanfare_endofencounter) {
-        console.log('[Fanfare] Valid fanfare_endofencounter message, showing popover');
+        // console.log('[Fanfare] Valid fanfare_endofencounter message, showing popover');
         if (fanfare) {
           fanfare.showPopover(message.data.fanfare_endofencounter);
         } else {
@@ -498,12 +652,12 @@ OBR.onReady(async () => {
       
       // Handle config updates (notify other GMs)
       if (message.data?.config_updated && userRole === 'GM') {
-        console.log('[Fanfare] Config updated notification received, reloading config');
+        // console.log('[Fanfare] Config updated notification received, reloading config');
         loadConfig();
         showStatus('Config updated by another GM', 'info');
       }
     });
-    console.log('[Fanfare] Broadcast listener registered');
+    // console.log('[Fanfare] Broadcast listener registered');
   } catch (error) {
     console.error('[Fanfare] Failed to initialize OBR context:', error);
     showStatus('Initialization error', 'error');

@@ -8,7 +8,7 @@ import OBR from '@owlbear-rodeo/sdk';
 class FanfareManager {
   constructor() {
     this.popovers = new Map();
-    console.log('[Fanfare Player] FanfareManager initialized');
+    // console.log('[Fanfare Player] FanfareManager initialized');
   }
 
   /**
@@ -16,15 +16,15 @@ class FanfareManager {
    */
   async showPopover(payload) {
     try {
-      console.log('[Fanfare Player] showPopover called with payload:', payload);
+      // console.log('[Fanfare Player] showPopover called with payload:', payload);
       const popoverId = `fanfare-${Date.now()}`;
-      console.log('[Fanfare Player] Generated popover ID:', popoverId);
+      // console.log('[Fanfare Player] Generated popover ID:', popoverId);
       
       const dataParam = encodeURIComponent(JSON.stringify(payload));
       const url = `/popover-content.html?data=${dataParam}`;
-      console.log('[Fanfare Player] Popover URL:', url);
+      // console.log('[Fanfare Player] Popover URL:', url);
 
-      console.log('[Fanfare Player] Opening popover with config', {
+      // console.log('[Fanfare Player] Opening popover with config', {
         id: popoverId,
         url: url,
         width: 380,
@@ -45,18 +45,18 @@ class FanfareManager {
         marginThreshold: 10
       });
 
-      console.log('[Fanfare Player] Popover opened successfully!');
+      // console.log('[Fanfare Player] Popover opened successfully!');
 
       // Auto-close after 10 seconds
       setTimeout(() => {
-        console.log('[Fanfare Player] Auto-closing popover:', popoverId);
+        // console.log('[Fanfare Player] Auto-closing popover:', popoverId);
         OBR.popover.close(popoverId).catch((err) => {
           console.warn('[Fanfare Player] Error closing popover:', err);
         });
       }, 10000);
 
       this.popovers.set(popoverId, payload);
-      console.log('[Fanfare Player] Popover stored in map. Total popovers:', this.popovers.size);
+      // console.log('[Fanfare Player] Popover stored in map. Total popovers:', this.popovers.size);
     } catch (error) {
       console.error('[Fanfare Player] Failed to open popover:', error);
     }
@@ -66,17 +66,17 @@ class FanfareManager {
 let fanfare;
 
 OBR.onReady(async () => {
-  console.log('[Fanfare Player] OBR.onReady fired!');
+  // console.log('[Fanfare Player] OBR.onReady fired!');
   fanfare = new FanfareManager();
-  console.log('[Fanfare Player] Fanfare player extension ready!');
+  // console.log('[Fanfare Player] Fanfare player extension ready!');
 });
 
-console.log('[Fanfare Player] Registering broadcast listener on channel: com.sewef.fanfare');
+// console.log('[Fanfare Player] Registering broadcast listener on channel: com.sewef.fanfare');
 OBR.broadcast.onMessage('com.sewef.fanfare', (message) => {
-  console.log('[Fanfare Player] Received broadcast message:', message);
+  // console.log('[Fanfare Player] Received broadcast message:', message);
   
   if (message.data?.fanfare_endofencounter) {
-    console.log('[Fanfare Player] Message type matches! Calling showPopover');
+    // console.log('[Fanfare Player] Message type matches! Calling showPopover');
     if (fanfare) {
       fanfare.showPopover(message.data.fanfare_endofencounter);
     } else {
@@ -85,6 +85,6 @@ OBR.broadcast.onMessage('com.sewef.fanfare', (message) => {
   }
 });
 
-console.log('[Fanfare Player] Script loaded and listener registered');
+// console.log('[Fanfare Player] Script loaded and listener registered');
 
 export default FanfareManager;

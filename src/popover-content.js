@@ -26,7 +26,7 @@ function applyTheme(theme) {
     root.style.setProperty('--popover-border', theme.secondary.light);
   }
   
-  console.log('[Fanfare Popover] Theme applied:', theme.mode);
+  // console.log('[Fanfare Popover] Theme applied:', theme.mode);
 }
 
 /**
@@ -37,12 +37,12 @@ function applyTheme(theme) {
 class PopoverContent {
   constructor() {
     this.container = document.querySelector('#popover-content');
-    console.log('[Fanfare Popover] PopoverContent initialized');
-    console.log('[Fanfare Popover] Container element found:', !!this.container);
+    // console.log('[Fanfare Popover] PopoverContent initialized');
+    // console.log('[Fanfare Popover] Container element found:', !!this.container);
   }
 
   buildHeader(title, subtitle) {
-    console.log('[Fanfare Popover] Building header with title:', title, 'subtitle:', subtitle);
+    // console.log('[Fanfare Popover] Building header with title:', title, 'subtitle:', subtitle);
     const subtitleHtml = subtitle ? `<div class="fanfare-subtitle">${subtitle}</div>` : '';
     return `
       <div class="fanfare-header">
@@ -59,20 +59,20 @@ class PopoverContent {
   }
 
   displayRewards(payload) {
-    console.log('[Fanfare Popover] displayRewards called with payload:', payload);
+    // console.log('[Fanfare Popover] displayRewards called with payload:', payload);
     if (!this.container) {
       console.error('[Fanfare Popover] Container element not found!');
       return;
     }
     
     const headerHtml = this.buildHeader(payload.title, payload.subtitle);
-    console.log('[Fanfare Popover] Header built');
+    // console.log('[Fanfare Popover] Header built');
     
     const xpSection = this.buildXpSection(payload.xp);
-    console.log('[Fanfare Popover] XP section built');
+    // console.log('[Fanfare Popover] XP section built');
     
     const lootSection = this.buildLootSection(payload.loot);
-    console.log('[Fanfare Popover] Loot section built');
+    // console.log('[Fanfare Popover] Loot section built');
 
     this.container.innerHTML = `
       <div class="fanfare-popover-inner">
@@ -85,12 +85,12 @@ class PopoverContent {
       </div>
     `;
 
-    console.log('[Fanfare Popover] HTML content rendered');
+    // console.log('[Fanfare Popover] HTML content rendered');
     // Attach close button event listener
     const closeBtn = this.container.querySelector('#fanfare-close-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
-        console.log('[Fanfare Popover] Close button clicked');
+        // console.log('[Fanfare Popover] Close button clicked');
         OBR.popover.close('fanfare-rewards').catch((err) => {
           console.warn('[Fanfare Popover] Error closing popover:', err);
         });
@@ -104,7 +104,7 @@ class PopoverContent {
   }
 
   animateXpPercent(current, newValue) {
-    console.log('[Fanfare Popover] Animating XP percent from', current, 'to', newValue);
+    // console.log('[Fanfare Popover] Animating XP percent from', current, 'to', newValue);
     const percentElement = this.container.querySelector('.fanfare-xp-percent');
     if (!percentElement) {
       console.warn('[Fanfare Popover] XP percent element not found!');
@@ -133,9 +133,9 @@ class PopoverContent {
   }
 
   buildXpSection(xpData) {
-    console.log('[Fanfare Popover] buildXpSection called with:', xpData);
+    // console.log('[Fanfare Popover] buildXpSection called with:', xpData);
     if (!xpData) {
-      console.log('[Fanfare Popover] XP data is empty, skipping XP section');
+      // console.log('[Fanfare Popover] XP data is empty, skipping XP section');
       return '';
     }
     
@@ -159,13 +159,13 @@ class PopoverContent {
   }
 
   buildLootSection(lootItems) {
-    console.log('[Fanfare Popover] buildLootSection called with items:', lootItems);
+    // console.log('[Fanfare Popover] buildLootSection called with items:', lootItems);
     if (!lootItems || lootItems.length === 0) {
-      console.log('[Fanfare Popover] No loot items - displaying empty state');
+      // console.log('[Fanfare Popover] No loot items - displaying empty state');
       return '<div class="fanfare-loot-empty"></div>';
     }
 
-    console.log('[Fanfare Popover] Building HTML for', lootItems.length, 'loot items');
+    // console.log('[Fanfare Popover] Building HTML for', lootItems.length, 'loot items');
     const lootHtml = lootItems.map((item, index) => `
       <div class="fanfare-loot-item fanfare-rarity-${item.rarity}" style="--delay: ${index * 0.1}s">
         <div class="fanfare-loot-inner">
@@ -199,17 +199,17 @@ class PopoverContent {
   }
 
   animateXpBar() {
-    console.log('[Fanfare Popover] animateXpBar called');
+    // console.log('[Fanfare Popover] animateXpBar called');
     if (!this.container) {
       console.warn('[Fanfare Popover] Container not available for animation!');
       return;
     }
     const bar = this.container.querySelector('.fanfare-xp-bar-fill');
     if (bar) {
-      console.log('[Fanfare Popover] XP bar element found, starting animation');
+      // console.log('[Fanfare Popover] XP bar element found, starting animation');
       requestAnimationFrame(() => {
         bar.classList.add('animate');
-        console.log('[Fanfare Popover] Animation class added to XP bar');
+        // console.log('[Fanfare Popover] Animation class added to XP bar');
       });
     } else {
       console.warn('[Fanfare Popover] XP bar element not found!');
@@ -218,7 +218,7 @@ class PopoverContent {
 }
 
 // Look for reward data in the URL or parent context
-console.log('[Fanfare Popover] Script loaded, looking for reward data');
+// console.log('[Fanfare Popover] Script loaded, looking for reward data');
 const popover = new PopoverContent();
 
 // Initialize theme
@@ -229,7 +229,7 @@ OBR.onReady(async () => {
     
     // Listen for theme changes
     OBR.theme.onChange((newTheme) => {
-      console.log('[Fanfare Popover] Theme changed');
+      // console.log('[Fanfare Popover] Theme changed');
       applyTheme(newTheme);
     });
   } catch (e) {
@@ -239,22 +239,22 @@ OBR.onReady(async () => {
 
 // Try to extract data from URL params or window context
 const urlParams = new URLSearchParams(window.location.search);
-console.log('[Fanfare Popover] URL search params:', window.location.search);
+// console.log('[Fanfare Popover] URL search params:', window.location.search);
 
 const dataParam = urlParams.get('data');
-console.log('[Fanfare Popover] Data parameter found:', !!dataParam);
+// console.log('[Fanfare Popover] Data parameter found:', !!dataParam);
 
 if (dataParam) {
   try {
-    console.log('[Fanfare Popover] Attempting to parse data parameter');
+    // console.log('[Fanfare Popover] Attempting to parse data parameter');
     const payload = JSON.parse(decodeURIComponent(dataParam));
-    console.log('[Fanfare Popover] Successfully parsed payload:', payload);
+    // console.log('[Fanfare Popover] Successfully parsed payload:', payload);
     popover.displayRewards(payload);
   } catch (e) {
     console.error('[Fanfare Popover] Failed to parse reward data:', e);
   }
 } else if (window.fanfarePayload) {
-  console.log('[Fanfare Popover] Using fallback window.fanfarePayload');
+  // console.log('[Fanfare Popover] Using fallback window.fanfarePayload');
   popover.displayRewards(window.fanfarePayload);
 } else {
   console.warn('[Fanfare Popover] No reward data found in URL or window context!');

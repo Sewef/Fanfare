@@ -70,8 +70,16 @@
               </div>
             </div>
             <div class="loot-buttons">
+            <div class="loot-buttons loot-buttons-row">
               <button id="addItemBtn" class="btn btn-secondary">+ Add</button>
+              <button id="importJsonBtn" class="btn btn-secondary">📤 Import</button>
+            </div>
+
+            <div class="loot-buttons loot-buttons-row">
               <button id="exampleBtn" class="btn btn-secondary" style="background: #6c757d;">Demo</button>
+              <button id="exportJsonBtn" class="btn btn-secondary">📥 Export</button>
+            </div>            </div>
+            <div class="loot-buttons">
             </div>
           </div>
           <div class="loot-list" id="lootList"></div>
@@ -110,6 +118,42 @@
         <div id="status" class="status"></div>
       </div>
     </div>
+
+    <!-- Export JSON Modal -->
+    <div id="exportJsonModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Export Loot as JSON</h2>
+          <button class="modal-close" id="exportJsonClose">✕</button>
+        </div>
+        <div class="modal-body">
+          <textarea id="exportJsonText" class="json-textarea" readonly></textarea>
+        </div>
+        <div class="modal-footer">
+          <button id="copyExportBtn" class="btn btn-primary">📋 Copy to Clipboard</button>
+          <button class="btn btn-secondary" id="closeExportBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import JSON Modal -->
+    <div id="importJsonModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Import Loot from JSON</h2>
+          <button class="modal-close" id="importJsonClose">✕</button>
+        </div>
+        <div class="modal-body">
+          <textarea id="importJsonText" class="json-textarea" placeholder="Paste your JSON here..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button id="pasteImportBtn" class="btn btn-secondary">📋 Paste from Clipboard</button>
+          <button id="confirmImportBtn" class="btn btn-primary">✓ Import</button>
+          <button class="btn btn-secondary" id="closeImportBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

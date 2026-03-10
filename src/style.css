@@ -211,6 +211,15 @@ select:focus {
   gap: 0.1em;
 }
 
+.loot-buttons-row {
+  flex-direction: row;
+  gap: 0.15em;
+}
+
+.loot-buttons-row .btn {
+  flex: 1;
+}
+
 .loot-form input,
 .loot-form select {
   margin-bottom: 0;
@@ -466,4 +475,118 @@ select:focus {
   color: var(--text-muted);
   font-style: italic;
   font-size: 0.8em;
+}
+
+/* Modals */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2em;
+  color: var(--text);
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--primary);
+}
+
+.modal-body {
+  padding: 1em;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 0.5em;
+  padding: 1em;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.modal-footer .btn {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.json-textarea {
+  width: 100%;
+  height: 300px;
+  padding: 0.75em;
+  background: var(--surface-light);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: 'Courier New', monospace;
+  font-size: 0.8em;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.json-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: var(--surface);
+  box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.1);
+}
+
+.json-textarea::placeholder {
+  color: var(--text-muted);
 }
