@@ -22,7 +22,7 @@ export default defineConfig({
       targets: [
         {
           src: "docs/*",
-          dest: "docs",
+          dest: "",
         },
       ],
     }),
