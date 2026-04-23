@@ -185,7 +185,7 @@ function addXpBar(label = null) {
   const barId = ++xpBarCounter;
   const barData = {
     id: barId,
-    label: label || `XP Bar ${barId}`,
+    label: label || "",
     max: 100,
     current: 0,
     new: 50,
@@ -291,7 +291,7 @@ window.updateXpBarValue = function(barId, field, value) {
 window.updateXpBarLabel = function(barId, label) {
   const bar = xpBars.find(b => b.id === barId);
   if (!bar) return;
-  bar.label = label.trim() || `XP Bar ${barId}`;
+  bar.label = label.trim() || "";
 };
 
 // XP Bar Management: Toggle bar enabled state
