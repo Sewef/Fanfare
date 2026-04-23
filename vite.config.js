@@ -1,5 +1,6 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,7 +9,7 @@ export default defineConfig({
       origin: "https://www.owlbear.rodeo",
     },
   },
-build: {
+  build: {
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
@@ -16,4 +17,14 @@ build: {
       },
     },
   },
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: "docs/*",
+          dest: "docs",
+        },
+      ],
+    }),
+  ],
 });
