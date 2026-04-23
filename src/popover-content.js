@@ -68,7 +68,7 @@ class PopoverContent {
     const headerHtml = this.buildHeader(payload.title, payload.subtitle);
     // console.log('[Fanfare Popover] Header built');
     
-    const xpSection = this.buildXpSection(payload.xp);
+    const xpSection = this.buildXpSection(payload.xpBars || payload.xp);
     // console.log('[Fanfare Popover] XP section built');
     
     const lootSection = this.buildLootSection(payload.loot);
@@ -97,39 +97,44 @@ class PopoverContent {
       });
     }
     // Start animations
-    this.animateXpBar();
-    if (payload.xp) {
-      this.animateXpPercent(payload.xp.current, payload.xp.new);
-    }
+    this.animateXpBars();
   }
 
-  animateXpPercent(current, newValue) {
-    // console.log('[Fanfare Popover] Animating XP percent from', current, 'to', newValue);
-    const percentElement = this.container.querySelector('.fanfare-xp-percent');
-    if (!percentElement) {
-      console.warn('[Fanfare Popover] XP percent element not found!');
-      return;
-    }
-
-    const duration = 2000; // 2 seconds to match bar animation
-    const startTime = performance.now();
-
-    const animatePercent = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+  animateXpBars() {
+    // Animate all XP bars
+    const xpBars = this.container.querySelectorAll('.fanfare-xp-bar-container');
+    xpBars.forEach((barContainer, index) => {
+      const percentElement = barContainer.querySelector('.fanfare-xp-percent');
+      if (!percentElement) return;
       
-      // Easing function (ease-out)
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentAttr = percentElement.getAttribute('data-current');
+      const newAttr = percentElement.getAttribute('data-new');
       
-      const currentPercent = current + (newValue - current) * easeProgress;
-      percentElement.textContent = Math.round(currentPercent) + '%';
+      if (!currentAttr || !newAttr) return;
+      
+      const current = parseInt(currentAttr);
+      const newValue = parseInt(newAttr);
+      
+      const duration = 2000; // 2 seconds to match bar animation
+      const startTime = performance.now();
 
-      if (progress < 1) {
-        requestAnimationFrame(animatePercent);
-      }
-    };
+      const animatePercent = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function (ease-out)
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        
+        const currentPercent = current + (newValue - current) * easeProgress;
+        percentElement.textContent = Math.round(currentPercent) + '%';
 
-    requestAnimationFrame(animatePercent);
+        if (progress < 1) {
+          requestAnimationFrame(animatePercent);
+        }
+      };
+
+      requestAnimationFrame(animatePercent);
+    });
   }
 
   buildXpSection(xpData) {
@@ -139,21 +144,43 @@ class PopoverContent {
       return '';
     }
     
-    const { current, new: newValue } = xpData;
-    const difference = newValue - current;
-    const diffText = difference > 0 ? `+${difference}%` : `${difference}%`;
-
-    return `
-      <div class="fanfare-xp-section">
+    // Handle old format (single xp object) for backward compatibility
+    if (!Array.isArray(xpData)) {
+      const { current, new: newValue } = xpData;
+      return `
+        <div class="fanfare-xp-section">
+          <div class="fanfare-xp-bar-container">
+            <div class="fanfare-xp-bar-bg">
+              <div 
+                class="fanfare-xp-bar-fill" 
+                style="--start: ${current}%; --target-width: ${newValue}%"
+              ></div>
+            </div>
+            <span class="fanfare-xp-percent" data-current="${current}" data-new="${newValue}">${current}%</span>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Handle new format (array of xp bars)
+    const xpBarsHtml = xpData.map((bar, index) => `
+      <div class="fanfare-xp-bar-wrapper" style="--delay: ${index * 0.1}s">
+        ${bar.label && xpData.length > 1 ? `<div class="fanfare-xp-label">${bar.label}</div>` : ''}
         <div class="fanfare-xp-bar-container">
           <div class="fanfare-xp-bar-bg">
             <div 
               class="fanfare-xp-bar-fill" 
-              style="--start: ${current}%; --target-width: ${newValue}%"
+              style="--start: ${bar.current}%; --target-width: ${bar.new}%"
             ></div>
           </div>
-          <span class="fanfare-xp-percent">${current}%</span>
+          <span class="fanfare-xp-percent" data-current="${bar.current}" data-new="${bar.new}">${bar.current}%</span>
         </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="fanfare-xp-section">
+        ${xpBarsHtml}
       </div>
     `;
   }
@@ -196,24 +223,6 @@ class PopoverContent {
       'legendary': 'Legendary'
     };
     return labels[rarity] || rarity;
-  }
-
-  animateXpBar() {
-    // console.log('[Fanfare Popover] animateXpBar called');
-    if (!this.container) {
-      console.warn('[Fanfare Popover] Container not available for animation!');
-      return;
-    }
-    const bar = this.container.querySelector('.fanfare-xp-bar-fill');
-    if (bar) {
-      // console.log('[Fanfare Popover] XP bar element found, starting animation');
-      requestAnimationFrame(() => {
-        bar.classList.add('animate');
-        // console.log('[Fanfare Popover] Animation class added to XP bar');
-      });
-    } else {
-      console.warn('[Fanfare Popover] XP bar element not found!');
-    }
   }
 }
 

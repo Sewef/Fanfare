@@ -100,13 +100,10 @@ let context = null;
 let userRole = null;
 let lootItems = [];
 let fanfare = null;
+let xpBars = []; // Array to store all XP bars
+let xpBarCounter = 0; // Counter for unique bar IDs
 
 // DOM Elements
-const currentXpInput = document.querySelector('#currentXp');
-const newXpInput = document.querySelector('#newXp');
-const maxXpInput = document.querySelector('#maxXp');
-const previewBar = document.querySelector('#previewBar');
-const previewText = document.querySelector('#previewText');
 const itemNameInput = document.querySelector('#itemName');
 const itemQuantityInput = document.querySelector('#itemQuantity');
 const itemRaritySelect = document.querySelector('#itemRarity');
@@ -117,13 +114,14 @@ const previewBtn = document.querySelector('#previewBtn');
 const resetBtn = document.querySelector('#resetBtn');
 const exampleBtn = document.querySelector('#exampleBtn');
 const statusEl = document.querySelector('#status');
-const includeXpCheckbox = document.querySelector('#includeXp');
 const includeLootCheckbox = document.querySelector('#includeLoot');
 const popoverTitleInput = document.querySelector('#popoverTitle');
 const popoverSubtitleInput = document.querySelector('#popoverSubtitle');
 const saveTargetSelect = document.querySelector('#saveTarget');
 const autoSaveCheckbox = document.querySelector('#autoSave');
 const saveBtn = document.querySelector('#saveBtn');
+const addXpBarBtn = document.querySelector('#addXpBarBtn');
+const xpBarsContainer = document.querySelector('#xpBarsContainer');
 
 // Export/Import JSON elements
 const exportJsonBtn = document.querySelector('#exportJsonBtn');
@@ -146,17 +144,6 @@ function showStatus(message, type = 'info') {
   statusEl.textContent = message;
   statusEl.className = `status show ${type}`;
   setTimeout(() => statusEl.classList.remove('show'), 3000);
-}
-
-// Utility: Update XP bar preview
-function updateXpPreview() {
-  if (!newXpInput || !previewBar || !previewText || !maxXpInput) return; // Safely handle missing elements
-  const maxXp = Math.max(1, parseInt(maxXpInput.value) || 100);
-  const newValue = Math.max(0, parseInt(newXpInput.value) || 0);
-  const percentage = Math.min(100, Math.round((newValue / maxXp) * 100));
-  // console.log(`[Fanfare DM] XP preview updated: ${newValue}/${maxXp} = ${percentage}%`);
-  previewBar.style.width = percentage + '%';
-  previewText.textContent = percentage + '%';
 }
 
 // Utility: Render loot list
@@ -192,6 +179,127 @@ function getRarityLabel(rarity) {
   };
   return labels[rarity] || rarity;
 }
+
+// XP Bar Management: Add XP bar
+function addXpBar(label = null) {
+  const barId = ++xpBarCounter;
+  const barData = {
+    id: barId,
+    label: label || `XP Bar ${barId}`,
+    max: 100,
+    current: 0,
+    new: 50,
+    enabled: true
+  };
+  
+  xpBars.push(barData);
+  renderXpBars();
+  if (!label) {
+    showStatus('XP bar added!', 'success');
+  }
+}
+
+// XP Bar Management: Remove XP bar
+window.removeXpBar = function(barId) {
+  const index = xpBars.findIndex(bar => bar.id === barId);
+  if (index !== -1) {
+    xpBars.splice(index, 1);
+    renderXpBars();
+    showStatus('XP bar removed', 'info');
+  }
+};
+
+// XP Bar Management: Update XP bar preview
+function updateXpPreview(barId) {
+  const bar = xpBars.find(b => b.id === barId);
+  if (!bar) return;
+  
+  const previewBar = document.querySelector(`#previewBar-${barId}`);
+  const previewText = document.querySelector(`#previewText-${barId}`);
+  
+  if (previewBar && previewText) {
+    const percentage = Math.min(100, Math.round((bar.new / bar.max) * 100));
+    previewBar.style.width = percentage + '%';
+    previewText.textContent = percentage + '%';
+  }
+}
+
+// XP Bar Management: Render all XP bars
+function renderXpBars() {
+  if (!xpBarsContainer) return;
+  
+  if (xpBars.length === 0) {
+    xpBarsContainer.innerHTML = '<div class="empty-state">No XP bars added yet</div>';
+    return;
+  }
+  
+  xpBarsContainer.innerHTML = xpBars.map(bar => `
+    <div class="xp-bar-item" data-bar-id="${bar.id}">
+      <div class="xp-bar-item-header">
+        <div class="form-group checkbox">
+          <input type="checkbox" id="includeXp-${bar.id}" ${bar.enabled ? 'checked' : ''} 
+                 onchange="toggleXpBar(${bar.id}, this.checked)" title="Enable/Disable" />
+          <label for="includeXp-${bar.id}">Enable</label>
+        </div>
+        <input type="text" class="xp-bar-label-input" id="xpLabel-${bar.id}" value="${bar.label}" 
+               placeholder="Label" 
+               onchange="updateXpBarLabel(${bar.id}, this.value)" />
+        <button class="btn-remove-xp" onclick="removeXpBar(${bar.id})" title="Remove">×</button>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="maxXp-${bar.id}">Max</label>
+          <input type="number" id="maxXp-${bar.id}" min="1" value="${bar.max}" 
+                 onchange="updateXpBarValue(${bar.id}, 'max', this.value)" />
+        </div>
+        <div class="form-group">
+          <label for="currentXp-${bar.id}">Curr</label>
+          <input type="number" id="currentXp-${bar.id}" min="0" value="${bar.current}" 
+                 onchange="updateXpBarValue(${bar.id}, 'current', this.value)" />
+        </div>
+        <div class="form-group">
+          <label for="newXp-${bar.id}">New</label>
+          <input type="number" id="newXp-${bar.id}" min="0" value="${bar.new}" 
+                 oninput="updateXpBarValue(${bar.id}, 'new', this.value)" />
+        </div>
+      </div>
+      
+      <div class="xp-bar-demo">
+        <div class="xp-bar-fill" id="previewBar-${bar.id}"></div>
+        <span class="xp-text" id="previewText-${bar.id}">0%</span>
+      </div>
+    </div>
+  `).join('');
+  
+  // Update all previews
+  xpBars.forEach(bar => updateXpPreview(bar.id));
+}
+
+// XP Bar Management: Update bar value
+window.updateXpBarValue = function(barId, field, value) {
+  const bar = xpBars.find(b => b.id === barId);
+  if (!bar) return;
+  
+  bar[field] = Math.max(0, parseInt(value) || 0);
+  if (field === 'max') bar[field] = Math.max(1, bar[field]);
+  
+  updateXpPreview(barId);
+};
+
+// XP Bar Management: Update bar label
+window.updateXpBarLabel = function(barId, label) {
+  const bar = xpBars.find(b => b.id === barId);
+  if (!bar) return;
+  bar.label = label.trim() || `XP Bar ${barId}`;
+};
+
+// XP Bar Management: Toggle bar enabled state
+window.toggleXpBar = function(barId, enabled) {
+  const bar = xpBars.find(b => b.id === barId);
+  if (!bar) return;
+  bar.enabled = enabled;
+};
 
 // Add loot item
 function addItem() {
@@ -245,27 +353,28 @@ function loadExampleItems() {
 
 // Build payload for broadcast
 function buildPayload() {
-  const maxXp = Math.max(1, parseInt(maxXpInput.value) || 100);
-  const currentXp = Math.max(0, parseInt(currentXpInput.value) || 0);
-  const newXp = Math.max(0, parseInt(newXpInput.value) || 50);
-  
-  // Calculate percentages from arbitrary values
-  const currentPercent = Math.min(100, Math.round((currentXp / maxXp) * 100));
-  const newPercent = Math.min(100, Math.round((newXp / maxXp) * 100));
-
-  const includeXp = !includeXpCheckbox || includeXpCheckbox.checked;
   const includeLoot = !includeLootCheckbox || includeLootCheckbox.checked;
   const title = (popoverTitleInput && popoverTitleInput.value.trim()) || '🎉 Rewards';
   const subtitle = (popoverSubtitleInput && popoverSubtitleInput.value.trim()) || '';
+
+  // Build XP bars array from enabled bars
+  const xpBarsArray = xpBars
+    .filter(bar => bar.enabled)
+    .map(bar => {
+      const currentPercent = Math.min(100, Math.round((bar.current / bar.max) * 100));
+      const newPercent = Math.min(100, Math.round((bar.new / bar.max) * 100));
+      return {
+        label: bar.label,
+        current: currentPercent,
+        new: newPercent
+      };
+    });
 
   const payload = {
     type: 'fanfare_endofencounter',
     title: title,
     subtitle: subtitle,
-    xp: includeXp ? {
-      current: currentPercent,
-      new: newPercent
-    } : null,
+    xpBars: xpBarsArray.length > 0 ? xpBarsArray : null,
     loot: includeLoot ? [...lootItems] : [],
     timestamp: Date.now()
   };
@@ -442,17 +551,18 @@ function previewPopover() {
 
 // Reset form
 function resetForm() {
-  currentXpInput.value = '0';
-  newXpInput.value = '50';
-  maxXpInput.value = '100';
   itemNameInput.value = '';
   itemQuantityInput.value = '1';
   itemRaritySelect.value = 'common';
   if (popoverTitleInput) popoverTitleInput.value = '🎉 Rewards';
   if (popoverSubtitleInput) popoverSubtitleInput.value = '';
   lootItems = [];
+  xpBars = []; // Reset XP bars
+  xpBarCounter = 0;
   renderLootList();
-  updateXpPreview();
+  renderXpBars();
+  // Add default XP bar
+  addXpBar('Experience');
   showStatus('Reset', 'info');
 }
 
@@ -468,9 +578,16 @@ async function saveConfig() {
     const configData = {
       title: (popoverTitleInput?.value || '🎉 Rewards').trim(),
       subtitle: (popoverSubtitleInput?.value || '').trim(),
-      maxXp: Math.max(1, parseInt(maxXpInput?.value || 100)),
-      current: Math.max(0, parseInt(currentXpInput?.value || 0)),
-      new: Math.max(0, parseInt(newXpInput?.value || 50)),
+      xpBars: xpBars.map(bar => ({
+        id: bar.id,
+        label: bar.label,
+        max: bar.max,
+        current: bar.current,
+        new: bar.new,
+        enabled: bar.enabled
+      })),
+      xpBarCounter: xpBarCounter,
+      lootItems: lootItems,
       saveTarget: saveTargetSelect.value,
       autoSave: autoSaveCheckbox?.checked || false
     };
@@ -524,11 +641,37 @@ async function loadConfig() {
       // console.log('[Fanfare DM] Config loaded:', configData);
       if (popoverTitleInput && configData.title) popoverTitleInput.value = configData.title;
       if (popoverSubtitleInput && configData.subtitle) popoverSubtitleInput.value = configData.subtitle;
-      if (maxXpInput && configData.maxXp) maxXpInput.value = configData.maxXp;
-      if (currentXpInput && configData.current) currentXpInput.value = configData.current;
-      if (newXpInput && configData.new) newXpInput.value = configData.new;
       if (autoSaveCheckbox && configData.autoSave) autoSaveCheckbox.checked = configData.autoSave;
-      updateXpPreview();
+      
+      // Restore XP bars
+      if (configData.xpBars && Array.isArray(configData.xpBars)) {
+        xpBars = configData.xpBars;
+        xpBarCounter = configData.xpBarCounter || xpBars.length;
+        renderXpBars();
+      } else if (configData.additionalXpBars && Array.isArray(configData.additionalXpBars)) {
+        // Backward compatibility: convert old format
+        xpBars = configData.additionalXpBars;
+        // Add old main XP if it existed
+        if (configData.maxXp && configData.includeMainXp !== false) {
+          xpBars.unshift({
+            id: 0,
+            label: 'Main XP',
+            max: configData.maxXp,
+            current: configData.current || 0,
+            new: configData.new || 50,
+            enabled: configData.includeMainXp !== false
+          });
+        }
+        xpBarCounter = configData.xpBarCounter || xpBars.length;
+        renderXpBars();
+      }
+      
+      // Restore loot items
+      if (configData.lootItems && Array.isArray(configData.lootItems)) {
+        lootItems = configData.lootItems;
+        renderLootList();
+      }
+      
       // console.log('[Fanfare DM] Config restored');
     }
   } catch (error) {
@@ -537,10 +680,8 @@ async function loadConfig() {
 }
 
 // Event listeners - only attach if elements exist (GM mode)
-if (currentXpInput) currentXpInput.addEventListener('change', updateXpPreview);
-if (newXpInput) newXpInput.addEventListener('input', updateXpPreview);
-if (maxXpInput) maxXpInput.addEventListener('input', updateXpPreview);
 if (addItemBtn) addItemBtn.addEventListener('click', addItem);
+if (addXpBarBtn) addXpBarBtn.addEventListener('click', () => addXpBar());
 if (exampleBtn) exampleBtn.addEventListener('click', loadExampleItems);
 if (exportJsonBtn) exportJsonBtn.addEventListener('click', exportLootJson);
 if (importJsonBtn) importJsonBtn.addEventListener('click', () => openModal(importJsonModal));
@@ -614,8 +755,15 @@ OBR.onReady(async () => {
     context = true;
     
     if (userRole === 'GM') {
-      // console.log('[Fanfare] GM mode - showing control panel');      // Load saved config
-      await loadConfig();      updateXpPreview();
+      // console.log('[Fanfare] GM mode - showing control panel');
+      // Load saved config
+      await loadConfig();
+      
+      // Initialize with default XP bar if none exist
+      if (xpBars.length === 0) {
+        addXpBar('Experience');
+      }
+      
       renderLootList();
       showStatus('GM Mode: Rewards Broadcaster Ready', 'success');
     } else {
